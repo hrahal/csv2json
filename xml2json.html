@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>XML to JSON converter</title>
+<style>
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.input-container {
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 1000px;
+  height: 200px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.json-container {
+  margin-bottom: 20px;
+}
+
+pre {
+  white-space: pre-wrap;
+  margin-bottom: 0;
+}
+
+pre.json {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  color: #000;
+  font-size: 14px;
+  width: 600px;
+  float: left;
+}
+
+.error, .meta {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  color: #000;
+  font-size: 14px;
+  width: 200px;
+  float: right;
+}
+
+.copy-button {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  padding: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.highlight {
+  background-color: yellow;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>CSV to JSON converter</h1>
+  <div class="input-container">
+    <textarea id="xml" placeholder="Enter your XML here" onclick="highlight('fox')"></textarea>
+    <button id="convert">Convert to JSON</button>
+    <button class="copy-button" onclick="copyToClipboard()">Copy JSON</button>
+
+  </div>
+  <div class="json-container">
+    <pre class="json" id="json"></pre>
+    <pre class="meta" id="meta"></pre>
+    <pre class="error" id="error"></pre>
+  </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" async defer></script>
+<script>
+var xml = document.getElementById("xml");
+var json = document.getElementById("json");
+var errors = document.getElementById("error");
+var meta = document.getElementById("meta");
+
+
+function convert() {
+  var xmlText = xml.value;
+  var jsonObject = Papa.parse(xmlText, { header: true });
+  json.innerHTML = JSON.stringify(jsonObject.data, undefined, 2);
+  errors.innerHTML = JSON.stringify(jsonObject.errors, undefined, 2);
+  meta.innerHTML = JSON.stringify(jsonObject.meta, undefined, 2);
+}
+
+document.getElementById("convert").onclick = convert
+
+function copyToClipboard() {
+  var jsonText = json.innerHTML;
+  navigator.clipboard.writeText(jsonText);
+}
+
+function highlight(text) {
+  console.log(2)
+  var inputText = document.getElementById("xml");
+  var innerHTML = inputText.innerHTML;
+  var index = innerHTML.indexOf(text);
+  console.log(index)
+  if (index >= 0) { 
+   innerHTML = innerHTML.substring(0,index) + "<span class='highlight'>" + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
+   inputText.innerHTML = innerHTML;
+   console.log(innerHTML)
+  }
+}
+</script>
+</html>
