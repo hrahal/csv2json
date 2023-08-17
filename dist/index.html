@@ -50,6 +50,9 @@ pre.json {
   font-size: 14px;
   width: 600px;
   float: left;
+  min-height: 200px;
+  height: auto;
+  word-wrap: break-word;
 }
 
 .error, .meta {
@@ -58,7 +61,7 @@ pre.json {
   background-color: #f8f8f8;
   color: #000;
   font-size: 14px;
-  width: 200px;
+  width: 190px;
   float: right;
 }
 
@@ -78,54 +81,52 @@ pre.json {
 </head>
 <body>
 <div class="container">
-  <h1>CSV to JSON converter</h1>
+  <h1>JSON to CSV converter</h1>
   <div class="input-container">
-    <textarea id="xml" placeholder="Enter your XML here" onclick="highlight('fox')"></textarea>
+    <textarea id="xml" placeholder="Enter your JSON or CSV here"></textarea>
     <button id="convert">Convert to JSON</button>
-    <button class="copy-button" onclick="copyToClipboard()">Copy JSON</button>
+    <button id="toCsv">Convert to CSV</button>
+    <button class="copy-button" onclick="copyToClipboard()">Copy Result</button>
 
   </div>
   <div class="json-container">
     <pre class="json" id="json"></pre>
-    <pre class="meta" id="meta"></pre>
+    <title>error</title>
     <pre class="error" id="error"></pre>
+    <!--pre class="meta" id="meta"></pre-->
   </div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" async defer></script>
 <script>
-var xml = document.getElementById("xml");
-var json = document.getElementById("json");
-var errors = document.getElementById("error");
-var meta = document.getElementById("meta");
+let xml = document.getElementById("xml");
+let json = document.getElementById("json");
+let errors = document.getElementById("error");
+// var meta = document.getElementById("meta");
 
 
-function convert() {
-  var xmlText = xml.value;
-  var jsonObject = Papa.parse(xmlText, { header: true });
+function csvToJson() {
+  let xmlText = xml.value;
+  let jsonObject = Papa.parse(xmlText, { header: true });
   json.innerHTML = JSON.stringify(jsonObject.data, undefined, 2);
   errors.innerHTML = JSON.stringify(jsonObject.errors, undefined, 2);
-  meta.innerHTML = JSON.stringify(jsonObject.meta, undefined, 2);
+  // meta.innerHTML = JSON.stringify(jsonObject.meta, undefined, 2);
 }
 
-document.getElementById("convert").onclick = convert
+function JsonToCsv() {
+  let xmlText = xml.value;
+  let jsonObject = Papa.unparse(xmlText);
+  json.innerHTML = jsonObject
+  // meta.innerHTML = JSON.stringify(jsonObject.meta, undefined, 2);
+}
+
+document.getElementById("convert").onclick = csvToJson
+document.getElementById("toCsv").onclick = JsonToCsv
 
 function copyToClipboard() {
-  var jsonText = json.innerHTML;
+  let jsonText = json.innerHTML;
   navigator.clipboard.writeText(jsonText);
 }
 
-function highlight(text) {
-  console.log(2)
-  var inputText = document.getElementById("xml");
-  var innerHTML = inputText.innerHTML;
-  var index = innerHTML.indexOf(text);
-  console.log(index)
-  if (index >= 0) { 
-   innerHTML = innerHTML.substring(0,index) + "<span class='highlight'>" + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
-   inputText.innerHTML = innerHTML;
-   console.log(innerHTML)
-  }
-}
 </script>
 </html>
